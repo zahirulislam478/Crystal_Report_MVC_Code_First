@@ -1,0 +1,65 @@
+﻿@model DUPL_Task_Project.Models.Author
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<div class="row">
+    <div class="col-12">
+        <div class="col-4 offset-4">
+            @if (!string.IsNullOrEmpty(ViewBag.Message))
+            {
+                <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    <strong>Success!</strong> @ViewBag.Message
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(x => x.AuthorId)
+                <h3 class="text-center" style="margin-top:20px; margin-bottom:15px;"><u>Edit Author</u></h3>
+                <div class="form-group row mb-3">
+                    @Html.LabelFor(model => model.AuthorName, htmlAttributes: new { @class = "col-form-label col-form-label-sm col-4" })
+                    <div class="col-8">
+                        @Html.EditorFor(model => model.AuthorName, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                        @Html.ValidationMessageFor(model => model.AuthorName, "", new { @class = "text-danger", style = "font-size:small" })
+                    </div>
+                </div>
+
+                <div class="form-group row mb-3">
+                    @Html.LabelFor(model => model.BriefProfile, htmlAttributes: new { @class = "col-form-label col-form-label-sm col-4" })
+                    <div class="col-8">
+                        @Html.EditorFor(model => model.BriefProfile, new { htmlAttributes = new { @class = "form-control form-control-sm" } })
+                        @Html.ValidationMessageFor(model => model.BriefProfile, "", new { @class = "text-danger", style = "font-size:small" })
+                    </div>
+                </div>
+
+                <div class="form-group row mb-1">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between">
+                            <a href="@Url.Action("Index", "Authors")" class="btn btn-secondary btn-sm"><i class="fa fa-arrow-left"></i> Back to List</a>
+                            <div>
+                                <button type="reset" class="btn btn-secondary btn-sm"><i class="fa fa-refresh"></i> Reset</button>
+                                <button type="submit" class="btn btn-primary btn-sm"><i class="fa fa-floppy-o"></i> Save</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section styles
+{
+    <link href="~/Content/fontawesome/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-datepicker.standalone.min.css" rel="stylesheet" />
+}
+
+@section scripts
+{
+    <script src="~/Scripts/jquery-3.7.1.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+}

@@ -1,0 +1,123 @@
+﻿@model DUPL_Task_Project.InputModels.ReportInputModel
+@{
+    ViewBag.Title = "Index";
+    var i = 0;
+}
+
+<style>
+    .form-control:focus {
+        box-shadow: none;
+        border-color: #ced4da;
+    }
+
+    .btn:focus {
+        outline: none;
+    }
+</style>
+
+<div class="row">
+    <div class="col-12" style="margin-top:15px;">
+        <h3 class="text-center" style="margin-bottom:15px;"><u>Report Input</u></h3>
+        @using (Html.BeginForm("Index", "Reports", FormMethod.Post, new { id = "frmReport" }))
+        {
+            <div class="form-group row">
+                <div class="col-3 offset-2 mb-1">
+                    @Html.LabelFor(x => x.From)
+                    <div class="input-group date mb-3">
+                        @Html.TextBoxFor(x => x.From, "{0:dd-MM-yyyy}", new { @class = "form-control", placeholder = "dd-mm-yyyy", id = "From" })
+                        <button class="btn btn-outline-secondary" onclick="showFromDatePicker()" type="button" id="button-addon2"><span class="bi bi-calendar2-week-fill"></span></button>
+                    </div>
+                    @Html.ValidationMessageFor(x => x.From, "", new { @class = "text-danger", style = "font-size:small" })
+                </div>
+                <div class="col-2"></div>
+                <div class="col-3 mb-1">
+                    @Html.LabelFor(x => x.To)
+                    <div class="input-group date">
+                        @Html.TextBoxFor(x => x.To, "{0:dd-MM-yyyy}", new { @class = "form-control", placeholder = "dd-mm-yyyy", id = "To" })
+                        <button class="btn btn-outline-secondary" onclick="showToDatePicker()" type="button" id="button-addon2"><span class="bi bi-calendar2-week-fill"></span></button>
+                    </div>
+                    @Html.ValidationMessageFor(x => x.To, "", new { @class = "text-danger", style = "font-size:small" })
+                </div>
+            </div>
+        }
+    </div>
+</div>
+@if (Model != null)
+{
+    <div class="row">
+        <div class="col-12">
+            <h3>Report</h3>
+            <table class="table table-bordered table-striped">
+                <thead class="table-light">
+                    <tr>
+                        <th>SL</th>
+                        <th>Date</th>
+                        <th>Book Name</th>
+                        <th>Author Name</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var b in Model.Books)
+                    {
+                        <tr>
+                            <td>@(++i)</td>
+                            <td>@((b.Date.HasValue) ? b.Date.Value.ToString("dd-MM-yyyy") : "")</td>
+                            <td>@b.BookName</td>
+                            <td>@(string.Join(", ", b.BookAuthors.Select(x => x.Author.AuthorName).ToList()))</td>
+                            <td>@b.Quantity</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+        <div class="col-12">
+            <div class="d-flex justify-content-center w-100 align-items-center">
+                <div class="btn-group" role="group" aria-label="Button group">
+                    <a target="_blank" href="@Url.Action("DownLoadPdf", "Reports", new { from = Model.From, to = Model.To })" class="btn btn-info btn-sm text-white"><i class="bi bi-file-earmark-pdf"></i> Download Pdf</a>
+                    <a target="_blank" href="@Url.Action("DownLoadExcel", "Reports", new { from = Model.From, to = Model.To })" class="btn btn-warning btn-sm text-white"><i class="bi bi-file-earmark-spreadsheet"></i> Download Excel</a>
+                    <a class="btn btn-success btn-sm text-white" href="@Url.Action("Index", "Reports")"><i class="bi bi-arrow-clockwise"></i> Refresh</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+
+@section styles
+{
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="~/Content/bootstrap-datepicker3.standalone.css" rel="stylesheet" />
+}
+@section scripts {
+    <script src="~/Scripts/jquery-3.7.1.js"></script>
+    <script src="~/Scripts/bootstrap-datepicker.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#From, #To').datepicker({
+                dateFormat: 'dd-mm-yy',
+                autoclose: true,
+                todayHighlight: true
+            });
+        });
+
+        function showFromDatePicker() {
+            $("#From").datepicker('show')
+        }
+
+        function showToDatePicker() {
+            $("#To").datepicker('show')
+        }
+        $("#From").change(() => {
+            var valid = $("#frmReport").valid();
+            if (valid) $("#frmReport").submit();
+        });
+        $("#To").change(() => {
+            var valid = $("#frmReport").valid();
+            if (valid) $("#frmReport").submit();
+        });
+    </script>
+}
